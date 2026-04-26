@@ -1,0 +1,5 @@
+*.webloc
+.DS_Store
+__pycache__/
+*.pyc
+chart_*.html
