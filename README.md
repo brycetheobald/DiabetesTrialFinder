@@ -12,7 +12,6 @@ Built for **BIOI 4870 / CSCI 8876** — University of Nebraska at Omaha
 DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTrials.gov into a normalized MySQL database, and provides:
 
 - A **Flask web interface** (Python) for searching, filtering, and browsing trials
-- A **statistics dashboard** with CSS bar charts
 - **Interactive Plotly visualizations** (US choropleth map, status/phase charts, sponsor rankings)
 - A **Tableau workbook** connecting directly to the MySQL database
 
@@ -32,7 +31,7 @@ DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTri
 
 ## Database Schema
 
-8 normalized tables (3NF):
+10 normalized tables (3NF):
 
 ```
 sponsors          → trials (lead_sponsor_id)
@@ -57,7 +56,7 @@ trials            ↔ locations       (via trial_locations)
 ### 3. Load trial data
 ```bash
 python3 fetch_trials.py
-/Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot diabetestrialfinder < data_insert.sql
+/Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot -P 8889 diabetestrialfinder < data_insert.sql
 ```
 
 ### 4. Run the web interface
@@ -77,7 +76,11 @@ python3 visualize.py
 
 ## Data Source
 
-Data sourced from [ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api) — 1,000 Type 2 Diabetes trials, United States only.
+Data sourced from three public APIs:
+
+- [ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api) — 1,000 Type 2 Diabetes trials, United States only
+- [CDC BRFSS via Socrata](https://chronicdata.cdc.gov/) — state-level diabetes prevalence and obesity rates
+- [US Census Bureau ACS API](https://www.census.gov/data/developers/data-sets/acs-1year.html) — state population estimates
 
 ---
 
