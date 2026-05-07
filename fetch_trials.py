@@ -1,13 +1,26 @@
 #!/usr/bin/env python3
 """
 fetch_trials.py
-Pulls Type 2 Diabetes clinical trials from ClinicalTrials.gov API v2
-and generates data_insert.sql for import into the Odin MariaDB database.
+
+Purpose:
+    Pull up to 1,000 Type 2 Diabetes clinical trials from ClinicalTrials.gov
+    and write them all to data_insert.sql so I can load them into MySQL.
+
+How it works:
+    The ClinicalTrials.gov API v2 returns 100 trials per page max, so I
+    loop through pages using the nextPageToken until I hit 1,000 or run out.
+    Each study gets parsed into rows for 8 tables (trials, sponsors,
+    interventions, conditions, locations, and the three junction tables).
 
 Usage:
     python3 fetch_trials.py
-Then copy data_insert.sql to Odin and run:
-    /Applications/MAMP/Library/bin/mysql -u root -proot diabetestrialfinder < data_insert.sql
+    Then load the output:
+    /Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot -P 8889 diabetestrialfinder < data_insert.sql
+
+Notes:
+    - MAMP needs to be running before loading the SQL file
+    - Duplicate interventions/conditions/locations are deduplicated using
+      lowercase key lookups before inserting
 """
 
 import requests
@@ -301,5 +314,5 @@ if __name__ == "__main__":
 
     print(f"Done! Wrote {OUTPUT_SQL}")
     print(f"  Lines: {sql.count(chr(10)):,}")
-    print(f"\nNext step on Odin:")
-    print(f"  /Applications/MAMP/Library/bin/mysql -u root -proot diabetestrialfinder < {OUTPUT_SQL}")
+    print(f"\nNext step — load into MySQL:")
+    print(f"  /Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot -P 8889 diabetestrialfinder < {OUTPUT_SQL}")
