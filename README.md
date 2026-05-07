@@ -1,6 +1,6 @@
 # DiabetesTrialFinder
 
-A relational database and web application for exploring Type 2 Diabetes clinical trials sourced from the [ClinicalTrials.gov](https://clinicaltrials.gov) public API.
+A relational database for exploring Type 2 Diabetes clinical trials sourced from the [ClinicalTrials.gov](https://clinicaltrials.gov) public API.
 
 Built for **BIOI 4870 / CSCI 8876** — University of Nebraska at Omaha  
 **Author:** Bryce Theobald
@@ -11,9 +11,8 @@ Built for **BIOI 4870 / CSCI 8876** — University of Nebraska at Omaha
 
 DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTrials.gov into a normalized MySQL database, and provides:
 
-- A **Flask web interface** (Python) for searching, filtering, and browsing trials
-- **Interactive Plotly visualizations** (US choropleth map, status/phase charts, sponsor rankings)
-- A **Tableau workbook** connecting directly to the MySQL database
+- A **Tableau workbook** with interactive dashboards connecting directly to the MySQL database
+- **Six stakeholder-driven SQL queries** for knowledge discovery across the integrated dataset
 
 ---
 
@@ -22,10 +21,9 @@ DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTri
 | Layer | Technology |
 |-------|-----------|
 | Database | MySQL 8 (via MAMP) |
-| Backend | Python 3 + Flask |
 | Data loader | Python 3 + Requests |
-| Visualization | Python + Plotly, Tableau Desktop |
-| Local server | MAMP (Apache + MySQL, ports 8888/8889) |
+| Visualization | Tableau Desktop |
+| Local server | MAMP (MySQL, port 8889) |
 
 ---
 
@@ -45,32 +43,24 @@ trials            ↔ locations       (via trial_locations)
 ## Setup & Usage
 
 ### 1. Prerequisites
-- [MAMP](https://www.mamp.info/) running on ports 8888 (Apache) and 8889 (MySQL)
-- Python 3 with `requests`, `mysql-connector-python`, `plotly`, `pandas`
+- [MAMP](https://www.mamp.info/) running with MySQL on port 8889
+- Python 3 with `requests` and `mysql-connector-python`
 
 ### 2. Create the database
 ```bash
-/Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot < schema.sql
+/Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot -P 8889 < schema.sql
 ```
 
 ### 3. Load trial data
 ```bash
 python3 fetch_trials.py
+python3 fetch_cdc.py
+python3 fetch_census.py
 /Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot -P 8889 diabetestrialfinder < data_insert.sql
 ```
 
-### 4. Run the web interface
-```bash
-python3 app.py
-```
-
-Then visit: `http://localhost:5000`
-
-### 5. Generate Plotly charts
-```bash
-pip3 install mysql-connector-python plotly pandas
-python3 visualize.py
-```
+### 4. Open in Tableau
+Connect Tableau Desktop to MySQL (localhost:8889, database: diabetestrialfinder) or open the packaged `1 - Tableau Workbook.twbx` directly.
 
 ---
 
