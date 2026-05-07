@@ -103,3 +103,37 @@ CREATE TABLE IF NOT EXISTS trial_locations (
     FOREIGN KEY (trial_id)    REFERENCES trials(trial_id),
     FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
+
+-- ─────────────────────────────────────────────
+-- 9. CDC Diabetes Prevalence by State
+--    Source: CDC Chronic Disease Indicators (CDI)
+--            U.S. BRFSS, Age-Adjusted Prevalence, 2021
+--            https://data.cdc.gov/resource/hksd-2xuw.json
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS cdc_diabetes_prevalence (
+    state_id       INT AUTO_INCREMENT PRIMARY KEY,
+    state_name     VARCHAR(100) NOT NULL,
+    state_abbrev   VARCHAR(2),
+    year           INT,
+    prevalence_pct DECIMAL(5,2),  -- % of adults with diagnosed diabetes (age-adjusted)
+    lower_ci       DECIMAL(5,2),  -- 95% confidence interval lower bound
+    upper_ci       DECIMAL(5,2),  -- 95% confidence interval upper bound
+    data_source    VARCHAR(200) DEFAULT 'CDC BRFSS, Chronic Disease Indicators 2021',
+    UNIQUE KEY uq_state_year (state_abbrev, year)
+);
+
+-- ─────────────────────────────────────────────
+-- 10. US Census Bureau State Population
+--     Source: ACS 5-Year Estimates, 2021
+--             Variable B01003_001E (Total Population)
+--             https://api.census.gov/data/2021/acs/acs5
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS census_state_population (
+    state_id     INT AUTO_INCREMENT PRIMARY KEY,
+    state_name   VARCHAR(100) NOT NULL,
+    state_abbrev VARCHAR(2),
+    census_year  INT,
+    population   INT,
+    data_source  VARCHAR(200) DEFAULT 'US Census Bureau, ACS 5-Year Estimates 2021',
+    UNIQUE KEY uq_state_census (state_abbrev, census_year)
+);

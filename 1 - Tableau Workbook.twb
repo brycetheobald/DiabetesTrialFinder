@@ -628,6 +628,11 @@
       <column caption='Study Type' datatype='string' name='[study_type]' role='dimension' type='nominal' />
       <column aggregation='Sum' datatype='integer' name='[trial_id (trial_locations)]' role='dimension' type='ordinal' />
       <column caption='Trial Id' datatype='integer' name='[trial_id]' role='measure' type='quantitative' />
+      <group caption='Action (Overall Status)' hidden='true' name='[Action (Overall Status)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[overall_status]' />
+        </groupfilter>
+      </group>
       <drill-paths>
         <drill-path name='country, state, city'>
           <field>[country]</field>
@@ -694,6 +699,16 @@
   <mapsources>
     <mapsource name='Tableau' />
   </mapsources>
+  <actions>
+    <action caption='Filter by Status' name='[Action1_122F2082B3BC4A308F21C745A088B3D2]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Dashboard 1' type='sheet' worksheet='Trials by Status' />
+      <command command='tsc:tsl-filter'>
+        <param name='special-fields' value='all' />
+        <param name='target' value='Dashboard 1' />
+      </command>
+    </action>
+  </actions>
   <worksheets>
     <worksheet name='Trials by Phase'>
       <table>
@@ -704,12 +719,19 @@
           <datasource-dependencies datasource='federated.1nxn37l1nqwhab1fwj1ck1wwvsos'>
             <column-instance column='[trial_id]' derivation='Count' name='[cnt:trial_id:qk]' pivot='key' type='quantitative' />
             <column-instance column='[phase]' derivation='None' name='[none:phase:nk]' pivot='key' type='nominal' />
+            <column caption='Overall Status' datatype='string' name='[overall_status]' role='dimension' type='nominal' />
             <column caption='Phase' datatype='string' name='[phase]' role='dimension' type='nominal' />
             <column caption='Trial Id' datatype='integer' name='[trial_id]' role='measure' type='quantitative' />
           </datasource-dependencies>
+          <filter class='categorical' column='[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[Action (Overall Status)]'>
+            <groupfilter function='level-members' level='[overall_status]' user:ui-action-filter='[Action1_122F2082B3BC4A308F21C745A088B3D2]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
           <shelf-sorts>
             <shelf-sort-v2 dimension-to-sort='[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[none:phase:nk]' direction='DESC' is-on-innermost-dimension='true' measure-to-sort-by='[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[cnt:trial_id:qk]' shelf='rows' />
           </shelf-sorts>
+          <slices>
+            <column>[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[Action (Overall Status)]</column>
+          </slices>
           <aggregation value='true' />
         </view>
         <style />
@@ -738,9 +760,16 @@
           <datasource-dependencies datasource='federated.1nxn37l1nqwhab1fwj1ck1wwvsos'>
             <column-instance column='[trial_id]' derivation='Count' name='[cnt:trial_id:qk]' pivot='key' type='quantitative' />
             <column-instance column='[state]' derivation='None' name='[none:state:nk]' pivot='key' type='nominal' />
+            <column caption='Overall Status' datatype='string' name='[overall_status]' role='dimension' type='nominal' />
             <column caption='State' datatype='string' name='[state]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
             <column caption='Trial Id' datatype='integer' name='[trial_id]' role='measure' type='quantitative' />
           </datasource-dependencies>
+          <filter class='categorical' column='[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[Action (Overall Status)]'>
+            <groupfilter function='level-members' level='[overall_status]' user:ui-action-filter='[Action1_122F2082B3BC4A308F21C745A088B3D2]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[federated.1nxn37l1nqwhab1fwj1ck1wwvsos].[Action (Overall Status)]</column>
+          </slices>
           <aggregation value='true' />
         </view>
         <style>
@@ -858,8 +887,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='950' minheight='950' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='12' type-v2='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='11' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='14' type-v2='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='13' param='vert' type-v2='layout-flow' w='98400' x='800' y='1000'>
                 <zone fixed-size='280' h='98000' id='10' is-fixed='true' name='Trials by Status' w='23800' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -1017,7 +1046,7 @@
         </viewpoint>
         <viewpoint name='Trials by Status' />
       </viewpoints>
-      <active id='-1' />
+      <active id='10' />
       <simple-id uuid='{51ADD820-AF5A-48DA-B967-971DEE0807CD}' />
     </window>
   </windows>
