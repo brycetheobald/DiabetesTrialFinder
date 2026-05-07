@@ -1,19 +1,11 @@
--- ============================================================
--- DiabetesTrialFinder — Stakeholder-Driven SQL Queries
--- BIOI 4870 / CSCI 8876 — Bryce Theobald, UNO
+-- DiabetesTrialFinder SQL Queries
+-- BIOI 4870 / CSCI 8876 | Bryce Theobald | UNO
 -- Database: diabetestrialfinder
--- ============================================================
 
--- ============================================================
--- QUERY 1 — Multi-table join (JOIN-DEPENDENT REQUIREMENT)
--- Stakeholder question: Which sponsors are running the most
--- trials, and what type of organization are they?
--- Why it matters: Helps researchers and patients understand
--- whether trials are industry-driven (pharmaceutical companies)
--- or led by academic/government institutions, which affects
--- how results may be interpreted or funded.
--- Demonstrates: 2-table JOIN, COUNT aggregation, GROUP BY, ORDER BY
--- ============================================================
+
+-- 1. Which sponsors are running the most trials, and what kind are they?
+-- Joins sponsors to trials so I can see whether industry or NIH is leading.
+-- This is the join-dependent query — can't answer it from one table alone.
 
 SELECT
     s.name              AS sponsor_name,
@@ -26,16 +18,9 @@ ORDER BY trial_count DESC
 LIMIT 15;
 
 
--- ============================================================
--- QUERY 2 — Multi-table join across 3 tables
--- Stakeholder question: Which states have the most active
--- Type 2 Diabetes clinical trial sites?
--- Why it matters: Patients and clinicians can identify where
--- trials are geographically concentrated, helping patients
--- find nearby opportunities to participate.
--- Demonstrates: 3-table JOIN (trials → trial_locations → locations),
--- COUNT, GROUP BY, ORDER BY
--- ============================================================
+-- 2. Which states have the most active Type 2 Diabetes trial sites?
+-- 3-table join: trials → trial_locations → locations.
+-- Useful for patients trying to find trials near them.
 
 SELECT
     l.state                             AS state,
@@ -51,16 +36,8 @@ ORDER BY trial_count DESC
 LIMIT 15;
 
 
--- ============================================================
--- QUERY 3 — Aggregation with GROUP BY
--- Stakeholder question: What is the average enrollment size
--- for trials in each study phase?
--- Why it matters: Phase 3 trials are expected to be larger
--- than Phase 1. This query confirms whether enrollment sizes
--- align with standard clinical trial design expectations,
--- and helps researchers set realistic recruitment targets.
--- Demonstrates: AVG aggregation, GROUP BY, ORDER BY
--- ============================================================
+-- 3. What is the average enrollment size by study phase?
+-- Expected: Phase 3 should be the largest since it needs statistical power.
 
 SELECT
     phase,
@@ -74,16 +51,8 @@ GROUP BY phase
 ORDER BY avg_enrollment DESC;
 
 
--- ============================================================
--- QUERY 4 — Filtered analysis with WHERE clause
--- Stakeholder question: Which trials are currently recruiting
--- participants, and how large are they?
--- Why it matters: Patients looking to join a trial need to
--- find actively recruiting studies. This query surfaces only
--- open trials sorted by enrollment size so patients can
--- identify high-visibility studies first.
--- Demonstrates: WHERE filter, JOIN, ORDER BY
--- ============================================================
+-- 4. Which trials are currently recruiting and how big are they?
+-- Filtered to RECRUITING status so patients can find open studies.
 
 SELECT
     t.nct_id,
@@ -100,17 +69,9 @@ ORDER BY t.enrollment_count DESC
 LIMIT 20;
 
 
--- ============================================================
--- QUERY 5 — Multi-table join with aggregation (4 tables)
--- Stakeholder question: Which intervention types appear most
--- often in currently recruiting trials?
--- Why it matters: Public health researchers and clinicians
--- want to know whether the active trial pipeline is focused
--- on drugs, behavioral changes, devices, or other approaches.
--- This shapes funding priorities and treatment development.
--- Demonstrates: 4-table JOIN (trials → trial_interventions →
--- interventions, filtered by status), COUNT, GROUP BY
--- ============================================================
+-- 5. Which intervention types show up most in actively recruiting trials?
+-- 4-table join through the junction table to see if drugs or behavioral
+-- interventions dominate the current pipeline.
 
 SELECT
     i.`type`                        AS intervention_type,
@@ -123,19 +84,8 @@ GROUP BY i.`type`
 ORDER BY recruiting_trials DESC;
 
 
--- ============================================================
--- QUERY 6 — Grouped comparison with GROUP BY
--- Stakeholder question: How do trial counts and average
--- enrollment differ between industry-sponsored trials and
--- those led by academic or government institutions?
--- Why it matters: Industry trials tend to test proprietary
--- drugs and may have different enrollment targets than NIH or
--- university-led studies. This comparison helps administrators
--- and policymakers understand the sponsor landscape and
--- potential conflicts of interest.
--- Demonstrates: JOIN, GROUP BY on categorical variable,
--- COUNT + AVG aggregation, comparative analysis
--- ============================================================
+-- 6. How do industry-sponsored trials compare to NIH/academic ones?
+-- Groups by sponsor class to compare trial counts and enrollment averages.
 
 SELECT
     s.class                             AS sponsor_type,
@@ -148,5 +98,3 @@ JOIN sponsors s ON t.lead_sponsor_id = s.sponsor_id
 WHERE t.enrollment_count IS NOT NULL
 GROUP BY s.class
 ORDER BY total_trials DESC;
-
-
