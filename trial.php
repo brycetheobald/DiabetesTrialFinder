@@ -94,7 +94,6 @@ footer{text-align:center;padding:20px;color:#94a3b8;font-size:.8rem;margin-top:1
   <h1>Diabetes<span>Trial</span>Finder</h1>
   <nav>
     <a href="index.php">Search</a>
-    <a href="stats.php">Statistics</a>
   </nav>
 </header>
 

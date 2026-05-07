@@ -169,7 +169,6 @@ footer a{color:#94a3b8}
   <h1>Diabetes<span>Trial</span>Finder</h1>
   <nav>
     <a href="index.php">Search</a>
-    <a href="stats.php">Statistics</a>
   </nav>
 </header>
 
