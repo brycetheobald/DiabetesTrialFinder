@@ -11,7 +11,7 @@ Built for **BIOI 4870 / CSCI 8876** — University of Nebraska at Omaha
 
 DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTrials.gov into a normalized MySQL database, and provides:
 
-- A **PHP web interface** for searching, filtering, and browsing trials
+- A **Flask web interface** (Python) for searching, filtering, and browsing trials
 - A **statistics dashboard** with CSS bar charts
 - **Interactive Plotly visualizations** (US choropleth map, status/phase charts, sponsor rankings)
 - A **Tableau workbook** connecting directly to the MySQL database
@@ -23,7 +23,7 @@ DiabetesTrialFinder loads 1,000 Type 2 Diabetes clinical trials from ClinicalTri
 | Layer | Technology |
 |-------|-----------|
 | Database | MySQL 8 (via MAMP) |
-| Backend | PHP 8.3 with MySQLi |
+| Backend | Python 3 + Flask |
 | Data loader | Python 3 + Requests |
 | Visualization | Python + Plotly, Tableau Desktop |
 | Local server | MAMP (Apache + MySQL, ports 8888/8889) |
@@ -60,13 +60,12 @@ python3 fetch_trials.py
 /Applications/MAMP/Library/bin/mysql80/bin/mysql -u root -proot diabetestrialfinder < data_insert.sql
 ```
 
-### 4. Deploy the web interface
-Copy the PHP files to your MAMP htdocs folder:
+### 4. Run the web interface
 ```bash
-cp db.php index.php trial.php stats.php /Applications/MAMP/htdocs/DiabetesTrialFinder/
+python3 app.py
 ```
 
-Then visit: `http://localhost:8888/DiabetesTrialFinder/`
+Then visit: `http://localhost:5000`
 
 ### 5. Generate Plotly charts
 ```bash

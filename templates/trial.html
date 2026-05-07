@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a href="/" class="btn btn-outline-secondary btn-sm mb-3">← Back to Search</a>
+
+<h5>{{ trial.brief_title }}</h5>
+<p class="text-muted mb-3">
+  <a href="https://clinicaltrials.gov/study/{{ trial.nct_id }}" target="_blank">{{ trial.nct_id }} ↗</a>
+</p>
+
+<div class="row">
+  <div class="col-md-6">
+    <table class="table table-sm table-bordered bg-white">
+      <tr><th>Status</th><td>{{ trial.overall_status.replace('_', ' ') if trial.overall_status else '—' }}</td></tr>
+      <tr><th>Phase</th><td>{{ trial.phase.replace('_', ' ') if trial.phase else '—' }}</td></tr>
+      <tr><th>Study Type</th><td>{{ trial.study_type or '—' }}</td></tr>
+      <tr><th>Enrollment</th><td>{{ "{:,}".format(trial.enrollment_count) if trial.enrollment_count else '—' }}</td></tr>
+      <tr><th>Start Date</th><td>{{ trial.start_date or '—' }}</td></tr>
+      <tr><th>Completion Date</th><td>{{ trial.completion_date or '—' }}</td></tr>
+      <tr><th>Sponsor</th><td>{{ trial.sponsor or '—' }}</td></tr>
+      <tr><th>Sponsor Type</th><td>{{ trial.sponsor_class or '—' }}</td></tr>
+      <tr><th>Min Age</th><td>{{ trial.min_age or '—' }}</td></tr>
+      <tr><th>Max Age</th><td>{{ trial.max_age or '—' }}</td></tr>
+      <tr><th>Sex</th><td>{{ trial.sex or '—' }}</td></tr>
+    </table>
+  </div>
+
+  <div class="col-md-6">
+    {% if interventions %}
+    <h6>Interventions</h6>
+    <ul class="list-group list-group-flush mb-3">
+      {% for iv in interventions %}
+      <li class="list-group-item px-0 py-1">
+        <small><strong>{{ iv.type }}:</strong> {{ iv.name }}</small>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if locations %}
+    <h6>Locations ({{ locations|length }})</h6>
+    <div style="max-height: 220px; overflow-y: auto;">
+      <ul class="list-group list-group-flush">
+        {% for loc in locations %}
+        <li class="list-group-item px-0 py-1">
+          <small>{{ loc.facility_name or '' }}{% if loc.city %}, {{ loc.city }}{% endif %}{% if loc.state %}, {{ loc.state }}{% endif %}</small>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if trial.brief_summary %}
+<h6 class="mt-3">Summary</h6>
+<p style="font-size: 0.9rem;">{{ trial.brief_summary }}</p>
+{% endif %}
+
+{% if trial.eligibility_criteria %}
+<h6>Eligibility Criteria</h6>
+<pre style="font-size: 0.8rem; white-space: pre-wrap; background: #f8f9fa; padding: 10px; border-radius: 4px;">{{ trial.eligibility_criteria }}</pre>
+{% endif %}
+
+{% endblock %}
